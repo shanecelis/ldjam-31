@@ -3,11 +3,12 @@ using System.Collections;
 
 public class SwarmMember : MonoBehaviour {
   public Vector3 velocity;
+  public string swarmName = "Swarm";
   private Swarm swarm;
 
 	// Use this for initialization
 	void Start () {
-    swarm = Swarm.instance;
+    swarm = Swarm.GetSwarm(swarmName);
     swarm.members.Add(this);
 	}
 	
@@ -89,6 +90,12 @@ public class SwarmMember : MonoBehaviour {
     // Must use static incase Swarm has been destroyed before we have been.
     Swarm.Deregister(this);
   }
+
+  void OnDestroy() {
+    // Must use static incase Swarm has been destroyed before we have been.
+    Swarm.Deregister(this);
+  }
+
 
   void OnDrawGizmos() {
     Gizmos.DrawLine(transform.position, transform.position + this.velocity);

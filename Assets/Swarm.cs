@@ -17,7 +17,7 @@ public class Swarm : MonoBehaviour {
   private Vector3? _averagePositionDetractor;
   public float attractorSpeed = 1f;
   public float detractorSpeed = 1f;
-  
+    
   private static Swarm _instance;
   public static Swarm instance {
     get {
@@ -32,6 +32,20 @@ public class Swarm : MonoBehaviour {
       return _instance;
     }
   }
+
+  public static Swarm GetSwarm(string name) {
+    var o = GameObject.Find(name);
+    if (o == null) {
+      o = new GameObject(name);
+    }
+    var swarm = o.GetComponent<Swarm>();
+    if (swarm == null) {
+      swarm = o.AddComponent<Swarm>();
+    }
+    return swarm;
+  }
+
+
 
   public Vector3 centerOfMass {
     get {
@@ -84,7 +98,7 @@ public class Swarm : MonoBehaviour {
         if (attractors.Count > 0) {
           Vector3 sum
             = SumVectors(attractors.Select(t => t.position).Cast<Vector3>().ToList());
-          _averagePositionAttractor = sum/members.Count;
+          _averagePositionAttractor = sum/attractors.Count;
         } else {
           _averagePositionAttractor = null;
         }
@@ -96,10 +110,10 @@ public class Swarm : MonoBehaviour {
   public Vector3? averagePositionDetractors {
     get {
       if (_averagePositionDetractor == null) {
-        if (attractors.Count > 0) {
+        if (detractors.Count > 0) {
           Vector3 sum
             = SumVectors(detractors.Select(t => t.position).Cast<Vector3>().ToList());
-          _averagePositionDetractor = sum/members.Count;
+          _averagePositionDetractor = sum/detractors.Count;
         } else {
           _averagePositionDetractor = null;
         }
@@ -119,6 +133,8 @@ public class Swarm : MonoBehaviour {
 	void Update () {
     _averageVelocity = null;
     _centerOfMass = null;
+    _averagePositionDetractor = null;
+    _averagePositionAttractor = null;
 	}
 
   void OnDestroy() {
@@ -126,10 +142,15 @@ public class Swarm : MonoBehaviour {
   }
 
   public static void Deregister(SwarmMember member) {
-    if (_instance == null) {
-      // Don't worry about it.
-    } else {
-      Swarm.instance.members.Remove(member);
+      var o = GameObject.Find(member.swarmName);
+      if (o != null) {
+        Swarm.GetSwarm(member.swarmName).members.Remove(member);
+      }
+  }
+
+  public void DestroySwarmMembers() {
+    foreach (var member in members) {
+      Destroy(member.gameObject);
     }
   }
 

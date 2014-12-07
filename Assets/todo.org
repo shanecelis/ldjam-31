@@ -2,6 +2,8 @@
   - [X] bee swarms
   - [X] do actual swarming with the bees
   - [X] add attractors and detractors to swarming
+  - [ ] kitties should use a swarm too
+  - [ ] bees stuck in door worth points
   - [ ] more splat sounds
   - [ ] kitties should look more like kitties
   - [X] spawning of kitties and moquitos

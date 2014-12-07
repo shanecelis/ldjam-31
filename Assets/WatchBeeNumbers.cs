@@ -4,11 +4,12 @@ using System.Collections;
 
 public class WatchBeeNumbers : MonoBehaviour {
 
+  public string swarmName = "Swarm";
   Swarm swarm;
   Text text;
 	// Use this for initialization
 	void Start () {
-    swarm = Swarm.instance;
+    swarm = Swarm.GetSwarm(swarmName);
     text = GetComponent<Text>();
 	}
 	

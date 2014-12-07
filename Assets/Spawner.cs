@@ -5,6 +5,7 @@ public class Spawner : MonoBehaviour {
   public GameObject prefab;
   public int spawnCount = 10;
   public float waitBetweenSpawns = 0.2f;
+  public float spawnRadius = 1f;
 
 	// Use this for initialization
 	void Start () {
@@ -29,8 +30,9 @@ public class Spawner : MonoBehaviour {
   }
 
   void SpawnThing() {
+    
     Instantiate(prefab, 
-                transform.position,
+                transform.position + spawnRadius * Random.onUnitSphere,
                 Quaternion.identity);
   }
 }
