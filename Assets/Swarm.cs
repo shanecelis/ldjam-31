@@ -11,8 +11,13 @@ public class Swarm : MonoBehaviour {
   public float matchVelocityP = 1f/8f;
   public float distanceThreshold = 2f;
   public float maxVelocity = 1f;
-  public Vector3 cm;
-  public Vector3 av;
+  public List<Transform> attractors = new List<Transform>();
+  public List<Transform> detractors = new List<Transform>();
+  private Vector3? _averagePositionAttractor;
+  private Vector3? _averagePositionDetractor;
+  public float attractorSpeed = 1f;
+  public float detractorSpeed = 1f;
+  
   private static Swarm _instance;
   public static Swarm instance {
     get {
@@ -44,7 +49,6 @@ public class Swarm : MonoBehaviour {
           _centerOfMass = transform.position;
         }
       }
-      cm = _centerOfMass.Value;
       return _centerOfMass.Value;
     }
   }
@@ -62,10 +66,49 @@ public class Swarm : MonoBehaviour {
           _averageVelocity = Vector3.zero;
         }
       }
-      av = _averageVelocity.Value;
       return _averageVelocity.Value;
     }
   }
+
+  public Vector3 SumVectors(List<Vector3> vectors) {
+    Vector3 sum = Vector3.zero;
+    foreach(Vector3 vector in vectors) {
+      sum += vector;
+    }
+    return sum;
+  }
+
+  public Vector3? averagePositionAttractors {
+    get {
+      if (_averagePositionAttractor == null) {
+        if (attractors.Count > 0) {
+          Vector3 sum
+            = SumVectors(attractors.Select(t => t.position).Cast<Vector3>().ToList());
+          _averagePositionAttractor = sum/members.Count;
+        } else {
+          _averagePositionAttractor = null;
+        }
+      }
+      return _averagePositionAttractor;
+    }
+  }
+
+  public Vector3? averagePositionDetractors {
+    get {
+      if (_averagePositionDetractor == null) {
+        if (attractors.Count > 0) {
+          Vector3 sum
+            = SumVectors(detractors.Select(t => t.position).Cast<Vector3>().ToList());
+          _averagePositionDetractor = sum/members.Count;
+        } else {
+          _averagePositionDetractor = null;
+        }
+      }
+      return _averagePositionDetractor;
+    }
+  }
+
+
 
 	// Use this for initialization
 	void Start () {

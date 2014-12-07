@@ -16,7 +16,9 @@ public class SwarmMember : MonoBehaviour {
     Vector3 v1 = Rule1();
     Vector3 v2 = Rule2();
     Vector3 v3 = Rule3();
-    this.velocity += (v1 + v2 + v3) * Time.deltaTime;
+    Vector3 v4 = Rule4();
+    Vector3 v5 = Rule5();
+    this.velocity += (v1 + v2 + v3 + v4 + v5) * Time.deltaTime;
     // Debug.Log("v1 " + v1);
     // Debug.Log("v2 " + v2);
     // Debug.Log("v3 " + v3);
@@ -26,21 +28,28 @@ public class SwarmMember : MonoBehaviour {
     this.transform.position += this.velocity * Time.deltaTime;
 	}
 
+  Vector3 FixAverage(Vector3 average, int count, Vector3 removeThis) {
+    if (count > 1)
+      return (average - removeThis/count) * count / (count - 1);
+    else
+      return Vector3.zero;
+  }
+
   Vector3 AverageVelocityMinusSelf() {
-    return (swarm.averageVelocity - velocity/swarm.members.Count)
-      * swarm.members.Count/(swarm.members.Count - 1);
+    return FixAverage(swarm.averageVelocity, swarm.members.Count, velocity);
   }
 
   Vector3 CenterOfMassMinusSelf() {
-    return (swarm.centerOfMass - transform.position/swarm.members.Count)
-      * swarm.members.Count/(swarm.members.Count - 1);
+    return FixAverage(swarm.centerOfMass, swarm.members.Count, transform.position);
   }
 
+  // Towards center.
   Vector3 Rule1() {
     return (CenterOfMassMinusSelf() - transform.position)
       * swarm.matchPositionP;
   }
 
+  // Avoid collisions.
   Vector3 Rule2() {
     Vector3 c = Vector3.zero;
     foreach(SwarmMember member in swarm.members) {
@@ -55,9 +64,25 @@ public class SwarmMember : MonoBehaviour {
     return c;
   }
 
+  // Match average velocity.
   Vector3 Rule3() {
     return (AverageVelocityMinusSelf() - velocity) * swarm.matchVelocityP;
     //return swarm.averageVelocity * swarm.matchVelocityP;
+  }
+
+  // Move towards attractants.
+  Vector3 Rule4() {
+    if (swarm.averagePositionAttractors != null) 
+      return (swarm.averagePositionAttractors.Value - transform.position).normalized * swarm.attractorSpeed;
+    else
+      return Vector3.zero;
+  }
+
+  Vector3 Rule5() {
+    if (swarm.averagePositionDetractors != null) 
+      return -(swarm.averagePositionDetractors.Value - transform.position).normalized * swarm.detractorSpeed;
+    else
+      return Vector3.zero;
   }
 
   void OnDisable() {

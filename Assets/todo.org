@@ -1,7 +1,14 @@
-* LD
-  - [ ] bee swarms
-  - [ ] do actual swarming with the bees
-  - [ ] bees sting you and die
+* LD31
+  - [X] bee swarms
+  - [X] do actual swarming with the bees
+  - [X] add attractors and detractors to swarming
+  - [ ] more splat sounds
+  - [ ] kitties should look more like kitties
+  - [X] spawning of kitties and moquitos
+  - [X] bees sting you and die
+  - [ ] need a score or counts for stuff
+  - [X] back of room closed to bees.
+  - [ ] maybe they're wasps instead of bees
   - [ ] give cat some HP (bees have 1 hp)
   - [ ] cats are killed or just run off
   - [ ] cat toys

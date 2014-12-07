@@ -18,7 +18,14 @@ public class KillOnContact : MonoBehaviour {
       // Stop the following behavior.
       Destroy(GetComponent<SpringJoint>());
       rigidbody.useGravity = true;
-      audio.Play();
+      // Multiple sounds would be good.
+      if (! audio.isPlaying)
+        audio.Play();
+      Invoke("KillYourselfAndYourParent", 2f);
     }
+  }
+
+  void KillYourselfAndYourParent() {
+    Destroy(transform.parent.gameObject);
   }
 }
