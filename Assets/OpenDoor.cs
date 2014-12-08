@@ -10,8 +10,8 @@ public class OpenDoor : MonoBehaviour {
   private List<Swarm> swarms;
   public enum State { Open, Opening, Closed, Closing };
   private State _state = State.Opening;
-  // states: open, opening, closed, closing
-  //private bool open = false;
+  public AudioClip openDoor;
+  public AudioClip closeDoor;
 
   public bool open {
     get {
@@ -63,7 +63,7 @@ public class OpenDoor : MonoBehaviour {
         AddAttractor();
         RemoveDetractor();
       }
-      //Debug.Log("State transition " + _state + " -> " + value);
+      Debug.Log("State transition " + _state + " -> " + value);
       _state = value;
     }
   }
@@ -96,6 +96,12 @@ public class OpenDoor : MonoBehaviour {
     }
   }
 
+  void Play(AudioClip clip) {
+    if (! audio.isPlaying) {
+      audio.clip = clip;
+      audio.Play();
+    }
+  }
 
 	// Use this for initialization
 	void Start () {
@@ -110,15 +116,19 @@ public class OpenDoor : MonoBehaviour {
         spring.targetPosition = open ? -90f : 0f;
         hingeJoint.spring = spring;
     }
+    //Play(openDoor);
 	}
 
   void FixedUpdate() {
+    
     if (hingeJoint.angle < -85f && state == State.Opening) {
       state = State.Open;
+      Play(openDoor);
     }
 
     if (hingeJoint.angle > -5f && state == State.Closing) {
       state = State.Closed;
+      Play(closeDoor);
     }
   }
 }
